@@ -1,0 +1,79 @@
+#pragma version 5
+
+// If app id == 0, must be creation call
+txn ApplicationID
+int 0
+==
+bnz on_create
+
+txn OnCompletion
+int NoOp
+==
+bnz on_app_call
+
+// Allow contract deletion, for testing.
+txn OnCompletion
+int DeleteApplication
+==
+bnz success
+
+// Anything else, fails.
+b failure
+
+on_create:
+byte "value"
+txna ApplicationArgs 0
+btoi
+app_global_put
+b success
+
+// Route based on "method" arg
+on_app_call:
+
+txna ApplicationArgs 0
+byte "increment"
+==
+bnz call_increment
+
+txna ApplicationArgs 0
+byte "decrement"
+==
+bnz call_decrement
+
+b failure
+
+// Return with value on stack
+call_get:
+byte "value"
+app_global_get
+return
+
+// Increment and update stored value
+call_increment:
+byte "value"
+byte "value"
+app_global_get
+int 1
++
+app_global_put
+b success
+
+// Decrement and update stored value
+call_decrement:
+byte "value"
+byte "value"
+app_global_get
+int 1
+-
+app_global_put
+b success
+
+// Failed contract execution.
+failure:
+int 0
+return
+
+// Successful contract execution.
+success:
+int 1
+return

@@ -1,0 +1,33 @@
+{
+  "name": "teal-testing-example",
+  "version": "1.0.0",
+  "description": "An example of automated testing for TEAL (Algorand) smart contracts.",
+  "scripts": {
+    "deploy": "node scripts/deploy.js",
+    "delete": "node scripts/delete.js",
+    "test": "jest --runInBand",
+    "test:watch": "jest --runInBand --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hone-labs/teal-testing-example.git"
+  },
+  "keywords": [
+    "algorand",
+    "teal",
+    "smart contract",
+    "blockchain"
+  ],
+  "author": "ashley@codecapers.com.au",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hone-labs/teal-testing-example/issues"
+  },
+  "homepage": "https://github.com/hone-labs/teal-testing-example#readme",
+  "devDependencies": {
+    "algosdk": "^1.17.0",
+    "jest": "^28.1.0",
+    "minimist": "^1.2.6",
+    "teal-interpreter": "^0.0.38"
+  }
+}

@@ -1,19 +1,11 @@
-const fs = require("fs/promises");
-const path = require("path");
 const { execute } = require("teal-interpreter");
-
-//
-// Reads the code from a TEAL file.
-//
-async function readTeal(tealFileName) {
-    return await fs.readFile(tealFileName, { encoding: "utf8" });
-}
+const { readFile } = require("../../../scripts/lib/algo-utils");
 
 //
 // Helper file to execute TEAL code directly from a file.
 //
 async function executeTeal(tealFileName, config) {
-    const code = await readTeal(tealFileName);
+    const code = await readFile(tealFileName);
     return await execute(code, config);
 }
 

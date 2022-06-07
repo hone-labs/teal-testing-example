@@ -5,8 +5,12 @@
   "scripts": {
     "deploy": "node scripts/deploy.js",
     "delete": "node scripts/delete.js",
-    "test": "jest --runInBand",
-    "test:watch": "jest --runInBand --watch"
+    "test": "npm run test-simulated",
+    "test:watch": "npm run test-simulated:watch",
+    "test-simulated": "jest ./test/simulated",
+    "test-simulated:watch": "jest --watch ./test/simulated",
+    "test-actual": "jest --runInBand ./test/actual",
+    "test-actual:watch": "jest --runInBand --watch ./test/actual"
   },
   "repository": {
     "type": "git",

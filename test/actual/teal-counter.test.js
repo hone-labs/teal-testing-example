@@ -1,6 +1,8 @@
 const algosdk = require('algosdk');
 const fs = require("fs/promises");
 const path = require("path");
+const { dumpTransaction, expectTransaction } = require('./lib/utils');
+const { signAndSubmitTransaction } = require("../../scripts/lib/algo-utils");
 
 const APPROVAL_PROGRAM = path.join(__dirname, "../../contracts/counter_approval.teal");
 const CLEAR_PROGRAM = path.join(__dirname, "../../contracts/counter_clear.teal");
@@ -23,29 +25,47 @@ describe("teal-counter / actual", () => {
     test("can increment teal counter", async () => {
     
         const initialValue = 15;
-        const appId = await deployTealCounter(creatorAccount, initialValue);
+        const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
         const initialGlobalState = await readGlobalState(creatorAccount, appId);
         expect(initialGlobalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue } });
 
-        await invokeTealCounter(creatorAccount, appId, "increment");
+        const { txnId, confirmedRound } = await invokeTealCounter(creatorAccount, appId, "increment");
 
         const updatedGlobalState = await readGlobalState(creatorAccount, appId);
         expect(updatedGlobalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue + 1 } });
+
+        await expectTransaction(algodClient, confirmedRound, txnId, {
+            txn: {
+                apaa: [ Buffer.from("increment").toString("base64") ],
+                apid: appId,
+                snd: creatorAccount.addr,
+                type: "appl",
+            },
+        });
     });
 
     test("can decrement teal counter", async () => {
    
         const initialValue = 8;
-        const appId = await deployTealCounter(creatorAccount, initialValue);
+        const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
         const initialGlobalState = await readGlobalState(creatorAccount, appId);
         expect(initialGlobalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue } });
 
-        await invokeTealCounter(creatorAccount, appId, "decrement");
+        const { txnId, confirmedRound } = await invokeTealCounter(creatorAccount, appId, "decrement");
 
         const updatedGlobalState = await readGlobalState(creatorAccount, appId);
         expect(updatedGlobalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue - 1 } });
+
+        await expectTransaction(algodClient, confirmedRound, txnId, {
+            txn: {
+                apaa: [ Buffer.from("decrement").toString("base64") ],
+                apid: appId,
+                snd: creatorAccount.addr,
+                type: "appl",
+            },
+        });
     });
 
     //
@@ -77,7 +97,7 @@ describe("teal-counter / actual", () => {
 
         const txnResult = await signAndSubmitTransaction(algodClient, creatorAccount, txn);
         return {
-            appId: txnResult.response["application-id"],
+            appId: txnResult.response["application-index"],
             ...txnResult,
         };
     }

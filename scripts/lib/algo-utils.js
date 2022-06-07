@@ -43,7 +43,10 @@ const fs = require("fs/promises");
 
     const txnDetails = await signAndSubmitTransaction(algodClient, creatorAccount, txn);
     const appId = txnDetails.response["application-index"];
-    return appId;
+    return { 
+        appId,
+        ...txnDetails,
+    };
 }
 
 //
@@ -122,7 +125,12 @@ async function submitTransaction(algodClient, signedTxn) {
 // Signs and submits a transaction, then waits for confirmation.
 //
 async function signAndSubmitTransaction(algodClient, fromAccount, txn) {
-    return await submitTransaction(algodClient, txn.signTxn(fromAccount.sk));
+    const result = await submitTransaction(algodClient, txn.signTxn(fromAccount.sk));
+    return {
+        txnId: result.txId,
+        confirmedRound: result.response["confirmed-round"],
+        response: result.response,
+    };
 }
 
 module.exports = {
@@ -130,4 +138,7 @@ module.exports = {
     deleteApp,
     dumpObject,
     readFile,
+    compileProgram,
+    submitTransaction,
+    signAndSubmitTransaction,
 };

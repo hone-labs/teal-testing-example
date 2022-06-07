@@ -13,6 +13,8 @@ describe("teal-counter / actual", () => {
     }
     const creatorAccount = algosdk.mnemonicToSecretKey(creatorMnemonic);
 
+    const algodClient = connectClient();
+
     //
     // These tests exceed the default 5s timeout.
     //
@@ -51,10 +53,6 @@ describe("teal-counter / actual", () => {
     //
     async function deployTealCounter(creatorAccount, initialValue) {
 
-        const algodClient = connectClient();
-
-        const sender = creatorAccount.addr;   
-    
         const params = await algodClient.getTransactionParams().do();
         params.fee = 1000;
         params.flatFee = true;
@@ -63,7 +61,7 @@ describe("teal-counter / actual", () => {
         const clearProgram = await compileProgram(algodClient, CLEAR_PROGRAM);
     
         const txn = algosdk.makeApplicationCreateTxn(
-            sender,
+            creatorAccount.addr,
             params,
             algosdk.OnApplicationComplete.NoOpOC,
             approvalProgram,
@@ -91,17 +89,12 @@ describe("teal-counter / actual", () => {
     //
     async function invokeTealCounter(creatorAccount, appId, method) {
 
-        const algodClient = connectClient();
-
-        const sender = creatorAccount.addr;   
-
         const params = await algodClient.getTransactionParams().do();
-    
         params.fee = 1000;
         params.flatFee = true;
 
         const callTxn = algosdk.makeApplicationNoOpTxn(
-            sender,
+            creatorAccount.addr,
             params,
             appId,
             [

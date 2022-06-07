@@ -102,12 +102,7 @@ describe("teal-counter / actual", () => {
             ],
         );
     
-        const callTxnId = callTxn.txID().toString();
-        const signedCallTxn = callTxn.signTxn(creatorAccount.sk);
-        await algodClient.sendRawTransaction(signedCallTxn).do();
-        await algosdk.waitForConfirmation(algodClient, callTxnId, 4);            
-        await algodClient.pendingTransactionInformation(callTxnId).do();
-   
+        return await signAndSubmitTransaction(algodClient, creatorAccount, callTxn);
     }
 
     function connectClient() {

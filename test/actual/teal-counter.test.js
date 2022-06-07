@@ -74,14 +74,12 @@ describe("teal-counter / actual", () => {
                 algosdk.encodeUint64(initialValue) // Argument 0.
             ]
         );
-    
-        const txnId = txn.txID().toString();
-        const signedTxn = txn.signTxn(creatorAccount.sk);
-        await algodClient.sendRawTransaction(signedTxn).do();
-        await algosdk.waitForConfirmation(algodClient, txnId, 4);
-        const transactionResponse = await algodClient.pendingTransactionInformation(txnId).do();
-        const appId = transactionResponse['application-index'];
-        return appId;
+
+        const txnResult = await signAndSubmitTransaction(algodClient, creatorAccount, txn);
+        return {
+            appId: txnResult.response["application-id"],
+            ...txnResult,
+        };
     }
 
     //

@@ -22,6 +22,23 @@ describe("teal-counter / actual", () => {
     //
     jest.setTimeout(100000);
 
+    test("can deploy teal counter", async () => {
+    
+        const initialValue = 15;
+        const { appId, txnId, confirmedRound } = await deployTealCounter(creatorAccount, initialValue);
+    
+        const globalState = await readGlobalState(creatorAccount, appId);
+        expect(globalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue } });
+    
+        await expectTransaction(algodClient, confirmedRound, txnId, {
+            txn: {
+                apaa: [ algosdk.encodeUint64(initialValue) ],
+                snd: creatorAccount.addr,
+                type: "appl",
+            },
+        });
+    });
+    
     test("can increment teal counter", async () => {
     
         const initialValue = 15;

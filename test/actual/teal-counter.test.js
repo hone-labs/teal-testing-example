@@ -88,6 +88,62 @@ describe("teal-counter / actual", () => {
         });
     });
 
+    test("can increment then decrement", async () => {
+        const initialValue = 8;
+        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+
+        await invokeTealCounter(creatorAccount, appId, "increment");
+        await invokeTealCounter(creatorAccount, appId, "decrement");
+
+        await expectGlobalState(algodClient, creatorAccount.addr, appId, {
+            value: {
+                uint: initialValue, // Back to original value.
+            },
+        });
+    });
+
+    test("can decrement then increment", async () => {
+        const initialValue = 8;
+        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+
+        await invokeTealCounter(creatorAccount, appId, "decrement");
+        await invokeTealCounter(creatorAccount, appId, "increment");
+
+        await expectGlobalState(algodClient, creatorAccount.addr, appId, {
+            value: {
+                uint: initialValue, // Back to original value.
+            },
+        });
+    });
+
+    test("can increment x2", async () => {
+        const initialValue = 8;
+        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+
+        await invokeTealCounter(creatorAccount, appId, "increment");
+        await invokeTealCounter(creatorAccount, appId, "increment");
+
+        await expectGlobalState(algodClient, creatorAccount.addr, appId, {
+            value: {
+                uint: initialValue + 2,
+            },
+        });
+    });
+
+    test("can decrement x2", async () => {
+        const initialValue = 8;
+        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+
+        await invokeTealCounter(creatorAccount, appId, "decrement");
+        await invokeTealCounter(creatorAccount, appId, "decrement");
+
+        await expectGlobalState(algodClient, creatorAccount.addr, appId, {
+            value: {
+                uint: initialValue - 2,
+            },
+        });
+    });
+
     //
     // Deploys the Teal-counter to the sandbox.
     //

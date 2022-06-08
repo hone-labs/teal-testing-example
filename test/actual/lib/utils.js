@@ -231,6 +231,26 @@ async function dumpTransaction(algodClient, roundNumber, txnId) {
 }
 
 //
+// Reads the global state of applications.
+//
+// https://developer.algorand.org/docs/get-details/dapps/smart-contracts/frontend/apps/#read-state
+//
+async function readGlobalState(client, addr, appId) {
+    const output = {};
+    const accountInfoResponse = await client.accountInformation(addr).do();
+    for (let i = 0; i < accountInfoResponse["created-apps"].length; i++) {
+        if (accountInfoResponse["created-apps"][i].id == appId) {
+            for (let n = 0; n < accountInfoResponse["created-apps"][i]["params"]["global-state"].length; n++) {
+                const variable = accountInfoResponse["created-apps"][i]["params"]["global-state"][n];
+                const name = Buffer.from(variable.key, "base64").toString();
+                output[name] = variable.value;
+            }
+        }
+    }
+    return output;
+}
+
+//
 // Expect that global state for an application has the specified fields.
 //
 async function expectGlobalState(algodClient, accountAddr, appId, expectedValues) {
@@ -252,6 +272,7 @@ module.exports = {
     expectFields,
     expectTransaction,
     dumpTransaction,
+    readGlobalState,
     expectGlobalState,
     dumpGlobalState,
 };

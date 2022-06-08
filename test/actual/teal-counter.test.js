@@ -217,24 +217,5 @@ describe("teal-counter / actual", () => {
         return new Uint8Array(Buffer.from(compileResponse.result, "base64"));
     }
 
-    // read global state of application
-    // https://developer.algorand.org/docs/get-details/dapps/smart-contracts/frontend/apps/#read-state
-    async function readGlobalState(account, index) {
-
-        const algodClient = connectClient();
-
-        const output = {};
-        const accountInfoResponse = await algodClient.accountInformation(account.addr).do();
-        for (let i = 0; i < accountInfoResponse['created-apps'].length; i++) { 
-            if (accountInfoResponse['created-apps'][i].id == index) {
-                for (let n = 0; n < accountInfoResponse['created-apps'][i]['params']['global-state'].length; n++) {
-                    const globalVariable = accountInfoResponse['created-apps'][i]['params']['global-state'][n]
-                    const name = Buffer.from(globalVariable.key, 'base64').toString();
-                    output[name] = globalVariable.value;
-                }
-            }
-        }
-        return output;
-    }
 });
 

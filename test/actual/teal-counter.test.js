@@ -3,9 +3,7 @@ const path = require("path");
 const { expectTransaction, expectGlobalState } = require('./lib/utils');
 const { signAndSubmitTransaction, readFile, deployApp } = require("../../scripts/lib/algo-utils");
 const environment = require("../../scripts/environment");
-
-const APPROVAL_PROGRAM = path.join(__dirname, "../../contracts/counter_approval.teal");
-const CLEAR_PROGRAM = path.join(__dirname, "../../contracts/counter_clear.teal");
+const config = require("../../scripts/config");
 
 describe("teal-counter / actual", () => {
 
@@ -152,13 +150,13 @@ describe("teal-counter / actual", () => {
         return await deployApp(
             algodClient,
             creatorAccount,
-            await readFile(APPROVAL_PROGRAM),
-            await readFile(CLEAR_PROGRAM),
-            STANDARD_FEE,
-            GLOBAL_BYTE_SLICES,
-            GLOBAL_INTS,
-            LOCAL_BYTE_SLICES,
-            LOCAL_INTS,
+            await readFile(config.APPROVAL_PROGRAM),
+            await readFile(config.CLEAR_PROGRAM),
+            config.STANDARD_FEE,
+            config.GLOBAL_BYTE_SLICES,
+            config.GLOBAL_INTS,
+            config.LOCAL_BYTE_SLICES,
+            config.LOCAL_INTS,
             [
                 algosdk.encodeUint64(initialValue),
             ],

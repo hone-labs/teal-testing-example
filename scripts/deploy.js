@@ -5,17 +5,7 @@
 const algosdk = require("algosdk");
 const environment = require("./environment");
 const { deployApp, readFile } = require("./lib/algo-utils");
-
-//
-// Smart contract deployment parameters.
-//
-const GLOBAL_BYTE_SLICES = 3;
-const GLOBAL_INTS = 1;
-const LOCAL_BYTE_SLICES = 0;
-const LOCAL_INTS = 0;
-const APPROVAL_PROGRAM = "contracts/counter_approval.teal";
-const CLEAR_PROGRAM = "contracts/counter_clear.teal";
-const STANDARD_FEE = 1000;
+const config = require("./config");
 
 async function main() {
     const creatorMnemonic = process.env.CREATOR_MNEMONIC;
@@ -29,13 +19,13 @@ async function main() {
     const { appId, appAddr } = await deployApp(
         algodClient,
         creatorAccount,
-        await readFile(APPROVAL_PROGRAM),
-        await readFile(CLEAR_PROGRAM),
-        STANDARD_FEE,
-        GLOBAL_BYTE_SLICES,
-        GLOBAL_INTS,
-        LOCAL_BYTE_SLICES,
-        LOCAL_INTS,
+        await readFile(config.APPROVAL_PROGRAM),
+        await readFile(config.CLEAR_PROGRAM),
+        config.STANDARD_FEE,
+        config.GLOBAL_BYTE_SLICES,
+        config.GLOBAL_INTS,
+        config.LOCAL_BYTE_SLICES,
+        config.LOCAL_INTS,
         [
             algosdk.encodeUint64(0),
         ],

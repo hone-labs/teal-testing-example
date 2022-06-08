@@ -57,7 +57,7 @@ describe("teal-counter / actual", () => {
 
         await expectTransaction(algodClient, confirmedRound, txnId, {
             txn: {
-                apaa: [ Buffer.from("increment").toString("base64") ],
+                apaa: [ "increment" ],
                 apid: appId,
                 snd: creatorAccount.addr,
                 type: "appl",
@@ -80,7 +80,7 @@ describe("teal-counter / actual", () => {
 
         await expectTransaction(algodClient, confirmedRound, txnId, {
             txn: {
-                apaa: [ Buffer.from("decrement").toString("base64") ],
+                apaa: [ "decrement" ],
                 apid: appId,
                 snd: creatorAccount.addr,
                 type: "appl",

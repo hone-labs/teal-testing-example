@@ -28,7 +28,7 @@ describe("teal-counter / actual", () => {
         const { appId, txnId, confirmedRound } = await deployTealCounter(creatorAccount, initialValue);
     
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
-            value: {
+            counterValue: {
                 uint: initialValue,
             },
         });
@@ -50,7 +50,7 @@ describe("teal-counter / actual", () => {
         const { txnId, confirmedRound } = await invokeIncrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
-            value: {
+            counterValue: {
                 uint: initialValue + 1,
             },
         });
@@ -73,7 +73,7 @@ describe("teal-counter / actual", () => {
         const { txnId, confirmedRound } = await invokeDecrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
-            value: {
+            counterValue: {
                 uint: initialValue - 1,
             },
         });
@@ -96,7 +96,7 @@ describe("teal-counter / actual", () => {
         await invokeDecrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
-            value: {
+            counterValue: {
                 uint: initialValue, // Back to original value.
             },
         });
@@ -110,7 +110,7 @@ describe("teal-counter / actual", () => {
         await invokeIncrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
-            value: {
+            counterValue: {
                 uint: initialValue, // Back to original value.
             },
         });
@@ -124,7 +124,7 @@ describe("teal-counter / actual", () => {
         await invokeIncrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
-            value: {
+            counterValue: {
                 uint: initialValue + 2,
             },
         });
@@ -138,7 +138,7 @@ describe("teal-counter / actual", () => {
         await invokeDecrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
-            value: {
+            counterValue: {
                 uint: initialValue - 2,
             },
         });
@@ -224,7 +224,7 @@ describe("teal-counter / actual", () => {
     //
     // Loads and compiles a TEAL program.
     //
-    async function compileProgram(client, fileName) {
+    async function compileProgram(client, fileName) { //fio:
         const encoder = new TextEncoder();
         const programSource = await fs.readFile(fileName, "utf8");
         const compileResponse = await client.compile(programSource).do();

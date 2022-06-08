@@ -21,7 +21,7 @@ bnz success
 b failure
 
 on_create:
-byte "value"
+byte "counterValue"
 txna ApplicationArgs 0
 btoi
 app_global_put
@@ -44,14 +44,14 @@ b failure
 
 // Return with value on stack
 call_get:
-byte "value"
+byte "counterValue"
 app_global_get
 return
 
 // Increment and update stored value
 call_increment:
-byte "value"
-byte "value"
+byte "counterValue"
+byte "counterValue"
 app_global_get
 int 1
 +
@@ -60,8 +60,8 @@ b success
 
 // Decrement and update stored value
 call_decrement:
-byte "value"
-byte "value"
+byte "counterValue"
+byte "counterValue"
 app_global_get
 int 1
 -

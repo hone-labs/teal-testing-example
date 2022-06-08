@@ -1,4 +1,5 @@
 const path = require("path");
+const { expectFields } = require("../lib/utils");
 
 const { executeTeal, success, failure } = require("./lib/utils");
 
@@ -18,19 +19,16 @@ describe("teal-counter / simulated", () => {
         };
 
         const result = await executeTeal(APPROVAL_PROGRAM, config);
-
-        // Only outputs a global for the current application.
-        expect(Object.keys(result.appGlobals)).toEqual([ "0" ]);
-        
-        // Only outputs a single "value".
-        const appGlobals = result.appGlobals["0"];
-        expect(Object.keys(appGlobals)).toEqual([ "counterValue" ]);
-        
-        const value = appGlobals.counterValue;
-        expect(value.type).toEqual("bigint");
-        expect(value.value).toEqual(22n);
-
         expect(success(result)).toBe(true);
+
+        expectFields(result.appGlobals, {
+            "0": {
+                counterValue: {
+                    type: "bigint",
+                    value: 22n,
+                },
+            },
+        });        
     });
 
     test("can increment the counter", async () => {
@@ -51,12 +49,16 @@ describe("teal-counter / simulated", () => {
         };
 
         const result = await executeTeal(APPROVAL_PROGRAM, config);
-
-        const value = result.appGlobals["0"].counterValue;
-        expect(value.type).toEqual("bigint");
-        expect(value.value).toEqual(16n);
-
         expect(success(result)).toBe(true);
+
+        expectFields(result.appGlobals, {
+            "0": {
+                counterValue: {
+                    type: "bigint",
+                    value: 16n,
+                },
+            },
+        });
     });    
 
     test("can decrement the counter", async () => {
@@ -77,12 +79,16 @@ describe("teal-counter / simulated", () => {
         };
 
         const result = await executeTeal(APPROVAL_PROGRAM, config);
-
-        const value = result.appGlobals["0"].counterValue;
-        expect(value.type).toEqual("bigint");
-        expect(value.value).toEqual(19n);
-
         expect(success(result)).toBe(true);
+
+        expectFields(result.appGlobals, {
+            "0": {
+                counterValue: {
+                    type: "bigint",
+                    value: 19n,
+                },
+            },
+        });
     });    
 
 });

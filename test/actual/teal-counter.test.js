@@ -3,6 +3,7 @@ const fs = require("fs/promises");
 const path = require("path");
 const { dumpTransaction, expectTransaction, expectGlobalState } = require('./lib/utils');
 const { signAndSubmitTransaction } = require("../../scripts/lib/algo-utils");
+const environment = require("./environment");
 
 const APPROVAL_PROGRAM = path.join(__dirname, "../../contracts/counter_approval.teal");
 const CLEAR_PROGRAM = path.join(__dirname, "../../contracts/counter_clear.teal");
@@ -11,11 +12,10 @@ describe("teal-counter / actual", () => {
 
     const creatorMnemonic = process.env.CREATOR_MNEMONIC;
     if (!creatorMnemonic) {
-        throw new Error(`Please set the mnemonic for your creator account in the environment variable CREATOR_MNEMONIC.`);
+        throw new Error(`Please set CREATOR_MNEMONIC to the mnemonic for the Algorand account that creates the smart contract.`);
     }
     const creatorAccount = algosdk.mnemonicToSecretKey(creatorMnemonic);
-
-    const algodClient = connectClient();
+    const algodClient = new algosdk.Algodv2(environment.token, environment.host, environment.port);
 
     //
     // These tests exceed the default 5s timeout.
@@ -212,14 +212,6 @@ describe("teal-counter / actual", () => {
     async function invokeDecrement(appId) {
         return await invokeTealCounter(creatorAccount, appId, "decrement");
     } 
-
-    function connectClient() { //todo: delegate this to environment!
-        const algodToken = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-        const algodServer = "http://localhost";
-        const algodPort = "4001";
-        const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
-        return algodClient;
-    }
 
     //
     // Loads and compiles a TEAL program.

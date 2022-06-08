@@ -24,9 +24,9 @@ describe("teal-counter / simulated", () => {
         
         // Only outputs a single "value".
         const appGlobals = result.appGlobals["0"];
-        expect(Object.keys(appGlobals)).toEqual([ "value" ]);
+        expect(Object.keys(appGlobals)).toEqual([ "counterValue" ]);
         
-        const value = appGlobals.value;
+        const value = appGlobals.counterValue;
         expect(value.type).toEqual("bigint");
         expect(value.value).toEqual(22n);
 
@@ -38,7 +38,7 @@ describe("teal-counter / simulated", () => {
         const config = {
             "appGlobals": {
                 "0": {
-                    "value": 15         // Previous value.
+                    "counterValue": 15         // Previous value.
                 }
             },
             "txn": {
@@ -52,7 +52,7 @@ describe("teal-counter / simulated", () => {
 
         const result = await executeTeal(APPROVAL_PROGRAM, config);
 
-        const value = result.appGlobals["0"].value;
+        const value = result.appGlobals["0"].counterValue;
         expect(value.type).toEqual("bigint");
         expect(value.value).toEqual(16n);
 
@@ -64,7 +64,7 @@ describe("teal-counter / simulated", () => {
         const config = {
             "appGlobals": {
                 "0": {
-                    "value": 20         // Previous value.
+                    "counterValue": 20         // Previous value.
                 }
             },
             "txn": {
@@ -78,7 +78,7 @@ describe("teal-counter / simulated", () => {
 
         const result = await executeTeal(APPROVAL_PROGRAM, config);
 
-        const value = result.appGlobals["0"].value;
+        const value = result.appGlobals["0"].counterValue;
         expect(value.type).toEqual("bigint");
         expect(value.value).toEqual(19n);
 

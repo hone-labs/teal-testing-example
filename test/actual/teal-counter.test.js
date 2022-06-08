@@ -159,11 +159,7 @@ describe("teal-counter / actual", () => {
             config.LOCAL_INTS,
             [
                 algosdk.encodeUint64(initialValue),
-            ],
-            [],
-            [],
-            [],
-            1
+            ]
         );
     }
 

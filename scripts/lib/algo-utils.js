@@ -14,11 +14,7 @@ const fs = require("fs/promises");
     numGlobalInts,
     numLocalByteSlices,
     numLocalInts,
-    appArgs,
-    foreignAssets,
-    foreignApps,
-    accounts,
-    extraPages
+    appArgs
 ) {
     const params = await algodClient.getTransactionParams().do();
     params.fee = fee;
@@ -34,11 +30,7 @@ const fs = require("fs/promises");
         numGlobalInts,
         numLocalByteSlices,
         numLocalInts,
-        foreignAssets,
-        accounts,
-        foreignApps,
-        appArgs,
-        extraPages
+        appArgs
     });
 
     const txnDetails = await signAndSubmitTransaction(algodClient, creatorAccount, txn);

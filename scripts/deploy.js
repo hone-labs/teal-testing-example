@@ -28,11 +28,7 @@ async function main() {
         config.LOCAL_INTS,
         [
             algosdk.encodeUint64(0),
-        ],
-        [],
-        [],
-        [],
-        1
+        ]
     );
 
     console.log(`Deployed:`);

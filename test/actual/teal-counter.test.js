@@ -1,9 +1,8 @@
 const algosdk = require('algosdk');
-const fs = require("fs/promises");
 const path = require("path");
-const { dumpTransaction, expectTransaction, expectGlobalState } = require('./lib/utils');
-const { signAndSubmitTransaction } = require("../../scripts/lib/algo-utils");
-const environment = require("./environment");
+const { expectTransaction, expectGlobalState } = require('./lib/utils');
+const { signAndSubmitTransaction, compileProgram, readFile } = require("../../scripts/lib/algo-utils");
+const environment = require("../../scripts/environment");
 
 const APPROVAL_PROGRAM = path.join(__dirname, "../../contracts/counter_approval.teal");
 const CLEAR_PROGRAM = path.join(__dirname, "../../contracts/counter_clear.teal");
@@ -153,8 +152,8 @@ describe("teal-counter / actual", () => {
         params.fee = 1000;
         params.flatFee = true;
     
-        const approvalProgram = await compileProgram(algodClient, APPROVAL_PROGRAM);
-        const clearProgram = await compileProgram(algodClient, CLEAR_PROGRAM);
+        const approvalProgram = await compileProgram(algodClient, await readFile(APPROVAL_PROGRAM));
+        const clearProgram = await compileProgram(algodClient, await readFile(CLEAR_PROGRAM));
     
         const txn = algosdk.makeApplicationCreateTxn(
             creatorAccount.addr,
@@ -212,16 +211,6 @@ describe("teal-counter / actual", () => {
     async function invokeDecrement(appId) {
         return await invokeTealCounter(creatorAccount, appId, "decrement");
     } 
-
-    //
-    // Loads and compiles a TEAL program.
-    //
-    async function compileProgram(client, fileName) { //fio:
-        const encoder = new TextEncoder();
-        const programSource = await fs.readFile(fileName, "utf8");
-        const compileResponse = await client.compile(programSource).do();
-        return new Uint8Array(Buffer.from(compileResponse.result, "base64"));
-    }
 
 });
 

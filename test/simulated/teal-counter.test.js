@@ -25,7 +25,7 @@ describe("teal-counter / simulated", () => {
             "0": {
                 counterValue: {
                     type: "bigint",
-                    value: 22n,
+                    value: 22,
                 },
             },
         });        
@@ -55,7 +55,7 @@ describe("teal-counter / simulated", () => {
             "0": {
                 counterValue: {
                     type: "bigint",
-                    value: 16n,
+                    value: 16,
                 },
             },
         });
@@ -85,7 +85,7 @@ describe("teal-counter / simulated", () => {
             "0": {
                 counterValue: {
                     type: "bigint",
-                    value: 19n,
+                    value: 19,
                 },
             },
         });

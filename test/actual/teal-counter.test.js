@@ -1,7 +1,7 @@
 const algosdk = require('algosdk');
 const fs = require("fs/promises");
 const path = require("path");
-const { dumpTransaction, expectTransaction } = require('./lib/utils');
+const { dumpTransaction, expectTransaction, expectGlobalState } = require('./lib/utils');
 const { signAndSubmitTransaction } = require("../../scripts/lib/algo-utils");
 
 const APPROVAL_PROGRAM = path.join(__dirname, "../../contracts/counter_approval.teal");
@@ -27,8 +27,11 @@ describe("teal-counter / actual", () => {
         const initialValue = 15;
         const { appId, txnId, confirmedRound } = await deployTealCounter(creatorAccount, initialValue);
     
-        const globalState = await readGlobalState(creatorAccount, appId);
-        expect(globalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue } });
+        await expectGlobalState(algodClient, creatorAccount.addr, appId, {
+            value: {
+                uint: initialValue,
+            },
+        });
     
         await expectTransaction(algodClient, confirmedRound, txnId, {
             txn: {
@@ -44,13 +47,13 @@ describe("teal-counter / actual", () => {
         const initialValue = 15;
         const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
-        const initialGlobalState = await readGlobalState(creatorAccount, appId);
-        expect(initialGlobalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue } });
-
         const { txnId, confirmedRound } = await invokeTealCounter(creatorAccount, appId, "increment");
 
-        const updatedGlobalState = await readGlobalState(creatorAccount, appId);
-        expect(updatedGlobalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue + 1 } });
+        await expectGlobalState(algodClient, creatorAccount.addr, appId, {
+            value: {
+                uint: initialValue + 1,
+            },
+        });
 
         await expectTransaction(algodClient, confirmedRound, txnId, {
             txn: {
@@ -67,13 +70,13 @@ describe("teal-counter / actual", () => {
         const initialValue = 8;
         const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
-        const initialGlobalState = await readGlobalState(creatorAccount, appId);
-        expect(initialGlobalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue } });
-
         const { txnId, confirmedRound } = await invokeTealCounter(creatorAccount, appId, "decrement");
 
-        const updatedGlobalState = await readGlobalState(creatorAccount, appId);
-        expect(updatedGlobalState).toEqual({ value: { bytes: '', type: 2, uint: initialValue - 1 } });
+        await expectGlobalState(algodClient, creatorAccount.addr, appId, {
+            value: {
+                uint: initialValue - 1,
+            },
+        });
 
         await expectTransaction(algodClient, confirmedRound, txnId, {
             txn: {

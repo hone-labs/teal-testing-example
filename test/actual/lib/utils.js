@@ -230,6 +230,21 @@ async function dumpTransaction(algodClient, roundNumber, txnId) {
     dumpData(await findTransaction(algodClient, roundNumber, txnId));
 }
 
+//
+// Expect that global state for an application has the specified fields.
+//
+async function expectGlobalState(algodClient, accountAddr, appId, expectedValues) {
+    const globalState = await readGlobalState(algodClient, accountAddr, appId);
+    expectFields(globalState, expectedValues);
+}
+
+//
+// Display global state for the app.
+//
+async function dumpGlobalState(algodClient, accountAddr, appId) {
+    dumpResult(await readGlobalState(algodClient, accountAddr, appId));
+}
+
 module.exports = {
     findTransaction,
     serializeData,
@@ -237,4 +252,6 @@ module.exports = {
     expectFields,
     expectTransaction,
     dumpTransaction,
+    expectGlobalState,
+    dumpGlobalState,
 };

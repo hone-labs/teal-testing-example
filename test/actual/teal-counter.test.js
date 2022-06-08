@@ -47,7 +47,7 @@ describe("teal-counter / actual", () => {
         const initialValue = 15;
         const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
-        const { txnId, confirmedRound } = await invokeTealCounter(creatorAccount, appId, "increment");
+        const { txnId, confirmedRound } = await invokeIncrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
             value: {
@@ -70,7 +70,7 @@ describe("teal-counter / actual", () => {
         const initialValue = 8;
         const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
-        const { txnId, confirmedRound } = await invokeTealCounter(creatorAccount, appId, "decrement");
+        const { txnId, confirmedRound } = await invokeDecrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
             value: {
@@ -92,8 +92,8 @@ describe("teal-counter / actual", () => {
         const initialValue = 8;
         const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
-        await invokeTealCounter(creatorAccount, appId, "increment");
-        await invokeTealCounter(creatorAccount, appId, "decrement");
+        await invokeIncrement(appId);
+        await invokeDecrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
             value: {
@@ -106,8 +106,8 @@ describe("teal-counter / actual", () => {
         const initialValue = 8;
         const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
-        await invokeTealCounter(creatorAccount, appId, "decrement");
-        await invokeTealCounter(creatorAccount, appId, "increment");
+        await invokeDecrement(appId);
+        await invokeIncrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
             value: {
@@ -120,8 +120,8 @@ describe("teal-counter / actual", () => {
         const initialValue = 8;
         const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
-        await invokeTealCounter(creatorAccount, appId, "increment");
-        await invokeTealCounter(creatorAccount, appId, "increment");
+        await invokeIncrement(appId);
+        await invokeIncrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
             value: {
@@ -134,8 +134,8 @@ describe("teal-counter / actual", () => {
         const initialValue = 8;
         const { appId } = await deployTealCounter(creatorAccount, initialValue);
 
-        await invokeTealCounter(creatorAccount, appId, "decrement");
-        await invokeTealCounter(creatorAccount, appId, "decrement");
+        await invokeDecrement(appId);
+        await invokeDecrement(appId);
 
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
             value: {
@@ -199,7 +199,21 @@ describe("teal-counter / actual", () => {
         return await signAndSubmitTransaction(algodClient, creatorAccount, callTxn);
     }
 
-    function connectClient() {
+    //
+    // Invokes the "increment" method of the smart contract.
+    //
+    async function invokeIncrement(appId) {
+        return await invokeTealCounter(creatorAccount, appId, "increment");
+    } 
+
+    //
+    // Invokes the "decrement" method of the smart contract.
+    //
+    async function invokeDecrement(appId) {
+        return await invokeTealCounter(creatorAccount, appId, "decrement");
+    } 
+
+    function connectClient() { //todo: delegate this to environment!
         const algodToken = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         const algodServer = "http://localhost";
         const algodPort = "4001";

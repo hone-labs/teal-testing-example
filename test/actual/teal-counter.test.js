@@ -1,7 +1,7 @@
 const algosdk = require('algosdk');
 const path = require("path");
 const { expectTransaction, expectGlobalState } = require('./lib/utils');
-const { signAndSubmitTransaction, compileProgram, readFile } = require("../../scripts/lib/algo-utils");
+const { signAndSubmitTransaction, readFile, deployApp } = require("../../scripts/lib/algo-utils");
 const environment = require("../../scripts/environment");
 
 const APPROVAL_PROGRAM = path.join(__dirname, "../../contracts/counter_approval.teal");
@@ -24,7 +24,7 @@ describe("teal-counter / actual", () => {
     test("can deploy teal counter", async () => {
     
         const initialValue = 15;
-        const { appId, txnId, confirmedRound } = await deployTealCounter(creatorAccount, initialValue);
+        const { appId, txnId, confirmedRound } = await deployTealCounter(initialValue);
     
         await expectGlobalState(algodClient, creatorAccount.addr, appId, {
             counterValue: {
@@ -44,7 +44,7 @@ describe("teal-counter / actual", () => {
     test("can increment teal counter", async () => {
     
         const initialValue = 15;
-        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+        const { appId } = await deployTealCounter(initialValue);
 
         const { txnId, confirmedRound } = await invokeIncrement(appId);
 
@@ -67,7 +67,7 @@ describe("teal-counter / actual", () => {
     test("can decrement teal counter", async () => {
    
         const initialValue = 8;
-        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+        const { appId } = await deployTealCounter(initialValue);
 
         const { txnId, confirmedRound } = await invokeDecrement(appId);
 
@@ -89,7 +89,7 @@ describe("teal-counter / actual", () => {
 
     test("can increment then decrement", async () => {
         const initialValue = 8;
-        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+        const { appId } = await deployTealCounter(initialValue);
 
         await invokeIncrement(appId);
         await invokeDecrement(appId);
@@ -103,7 +103,7 @@ describe("teal-counter / actual", () => {
 
     test("can decrement then increment", async () => {
         const initialValue = 8;
-        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+        const { appId } = await deployTealCounter(initialValue);
 
         await invokeDecrement(appId);
         await invokeIncrement(appId);
@@ -117,7 +117,7 @@ describe("teal-counter / actual", () => {
 
     test("can increment x2", async () => {
         const initialValue = 8;
-        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+        const { appId } = await deployTealCounter(initialValue);
 
         await invokeIncrement(appId);
         await invokeIncrement(appId);
@@ -131,7 +131,7 @@ describe("teal-counter / actual", () => {
 
     test("can decrement x2", async () => {
         const initialValue = 8;
-        const { appId } = await deployTealCounter(creatorAccount, initialValue);
+        const { appId } = await deployTealCounter(initialValue);
 
         await invokeDecrement(appId);
         await invokeDecrement(appId);
@@ -146,35 +146,27 @@ describe("teal-counter / actual", () => {
     //
     // Deploys the Teal-counter to the sandbox.
     //
-    async function deployTealCounter(creatorAccount, initialValue) {
+    async function deployTealCounter(initialValue) {
 
-        const params = await algodClient.getTransactionParams().do();
-        params.fee = 1000;
-        params.flatFee = true;
-    
-        const approvalProgram = await compileProgram(algodClient, await readFile(APPROVAL_PROGRAM));
-        const clearProgram = await compileProgram(algodClient, await readFile(CLEAR_PROGRAM));
-    
-        const txn = algosdk.makeApplicationCreateTxn(
-            creatorAccount.addr,
-            params,
-            algosdk.OnApplicationComplete.NoOpOC,
-            approvalProgram,
-            clearProgram,
-            0,
-            0,
-            1,
-            3,
+        // Deploy the smart contract.
+        return await deployApp(
+            algodClient,
+            creatorAccount,
+            await readFile(APPROVAL_PROGRAM),
+            await readFile(CLEAR_PROGRAM),
+            STANDARD_FEE,
+            GLOBAL_BYTE_SLICES,
+            GLOBAL_INTS,
+            LOCAL_BYTE_SLICES,
+            LOCAL_INTS,
             [
-                algosdk.encodeUint64(initialValue) // Argument 0.
-            ]
+                algosdk.encodeUint64(initialValue),
+            ],
+            [],
+            [],
+            [],
+            1
         );
-
-        const txnResult = await signAndSubmitTransaction(algodClient, creatorAccount, txn);
-        return {
-            appId: txnResult.response["application-index"],
-            ...txnResult,
-        };
     }
 
     //

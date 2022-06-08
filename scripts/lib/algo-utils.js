@@ -43,8 +43,10 @@ const fs = require("fs/promises");
 
     const txnDetails = await signAndSubmitTransaction(algodClient, creatorAccount, txn);
     const appId = txnDetails.response["application-index"];
+    const appAddr = algosdk.getApplicationAddress(appId);    
     return { 
         appId,
+        appAddr,
         ...txnDetails,
     };
 }

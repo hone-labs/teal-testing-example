@@ -13,8 +13,8 @@ const GLOBAL_BYTE_SLICES = 3;
 const GLOBAL_INTS = 1;
 const LOCAL_BYTE_SLICES = 0;
 const LOCAL_INTS = 0;
-const APPROVAL_PROG = "contracts/counter_approval.teal";
-const CLEAR_PROG = "contracts/counter_clear.teal";
+const APPROVAL_PROGRAM = "contracts/counter_approval.teal";
+const CLEAR_PROGRAM = "contracts/counter_clear.teal";
 const STANDARD_FEE = 1000;
 
 async function main() {
@@ -26,11 +26,11 @@ async function main() {
     const algodClient = new algosdk.Algodv2(environment.token, environment.host, environment.port);
 
     // Deploy the smart contract.
-    const appId = await deployApp(
+    const { appId, appAddr } = await deployApp(
         algodClient,
         creatorAccount,
-        await readFile(APPROVAL_PROG),
-        await readFile(CLEAR_PROG),
+        await readFile(APPROVAL_PROGRAM),
+        await readFile(CLEAR_PROGRAM),
         STANDARD_FEE,
         GLOBAL_BYTE_SLICES,
         GLOBAL_INTS,
@@ -45,8 +45,6 @@ async function main() {
         1
     );
 
-    const appAddr = algosdk.getApplicationAddress(appId);    
- 
     console.log(`Deployed:`);
     console.log(`- Contract id: ${appId}, address: ${appAddr}`);
 }

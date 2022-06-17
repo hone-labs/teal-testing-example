@@ -4,8 +4,7 @@
 
 const algosdk = require("algosdk");
 const environment = require("./environment");
-const { deployApp, readFile } = require("./lib/algo-utils");
-const config = require("./config");
+const { deployTealCounter } = require("./lib/utils");
 
 async function main() {
     const creatorMnemonic = process.env.CREATOR_MNEMONIC;
@@ -16,20 +15,7 @@ async function main() {
     const algodClient = new algosdk.Algodv2(environment.token, environment.host, environment.port);
 
     // Deploy the smart contract.
-    const { appId, appAddr } = await deployApp(
-        algodClient,
-        creatorAccount,
-        await readFile(config.APPROVAL_PROGRAM),
-        await readFile(config.CLEAR_PROGRAM),
-        config.STANDARD_FEE,
-        config.GLOBAL_BYTE_SLICES,
-        config.GLOBAL_INTS,
-        config.LOCAL_BYTE_SLICES,
-        config.LOCAL_INTS,
-        [
-            algosdk.encodeUint64(0),
-        ]
-    );
+    const { appId, appAddr } = await deployTealCounter(algodClient, creatorAccount, 0);
 
     console.log(`Deployed:`);
     console.log(`- Contract id: ${appId}, address: ${appAddr}`);

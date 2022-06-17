@@ -31,9 +31,10 @@ async function main() {
     console.log(`Deleted application ${deletedAppId} from account ${creatorAccount.addr}`);
 }
 
-main().catch((err) => {
-    console.error(`Failed:`);
-    console.error((err && err.stack) || err);
-    console.error(err.toString());
-    console.error(err.message);
-});
+main()
+    .catch((err) => {
+        console.error(`Failed:`);
+        console.error((err && err.stack) || err);
+        console.error(err.toString());
+        console.error(err.message);
+    });

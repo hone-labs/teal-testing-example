@@ -1,8 +1,8 @@
 const algosdk = require('algosdk');
-const path = require("path");
 const { expectTransaction, expectGlobalState } = require('./lib/utils');
-const { signAndSubmitTransaction, readFile, deployApp } = require("../../scripts/lib/algo-utils");
+const tealCounter = require("../../scripts/lib/utils");
 const environment = require("../../scripts/environment");
+
 const config = require("../../scripts/config");
 
 describe("teal-counter / actual", () => {
@@ -145,58 +145,23 @@ describe("teal-counter / actual", () => {
     // Deploys the Teal-counter to the sandbox.
     //
     async function deployTealCounter(initialValue) {
-
-        // Deploy the smart contract.
-        return await deployApp(
-            algodClient,
-            creatorAccount,
-            await readFile(config.APPROVAL_PROGRAM),
-            await readFile(config.CLEAR_PROGRAM),
-            config.STANDARD_FEE,
-            config.GLOBAL_BYTE_SLICES,
-            config.GLOBAL_INTS,
-            config.LOCAL_BYTE_SLICES,
-            config.LOCAL_INTS,
-            [
-                algosdk.encodeUint64(initialValue),
-            ]
-        );
-    }
-
-    //
-    // Invokes a "method" in the teal counter.
-    //
-    async function invokeTealCounter(creatorAccount, appId, method) {
-
-        const params = await algodClient.getTransactionParams().do();
-        params.fee = 1000;
-        params.flatFee = true;
-
-        const callTxn = algosdk.makeApplicationNoOpTxn(
-            creatorAccount.addr,
-            params,
-            appId,
-            [
-                new Uint8Array(Buffer.from(method)),
-            ],
-        );
-    
-        return await signAndSubmitTransaction(algodClient, creatorAccount, callTxn);
+        return await tealCounter.deployTealCounter(algodClient, creatorAccount, initialValue);
     }
 
     //
     // Invokes the "increment" method of the smart contract.
     //
     async function invokeIncrement(appId) {
-        return await invokeTealCounter(creatorAccount, appId, "increment");
+        return await tealCounter.invokeIncrement(algodClient, creatorAccount, appId);
     } 
 
     //
     // Invokes the "decrement" method of the smart contract.
     //
     async function invokeDecrement(appId) {
-        return await invokeTealCounter(creatorAccount, appId, "decrement");
+        return await tealCounter.invokeDecrement(algodClient, creatorAccount, appId);
     } 
 
 });
+
 

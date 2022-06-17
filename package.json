@@ -4,6 +4,9 @@
   "description": "An example of automated testing for TEAL (Algorand) smart contracts.",
   "scripts": {
     "deploy": "node scripts/deploy.js",
+    "increment": "node scripts/increment.js",
+    "decrement": "node scripts/decrement.js",
+    "show-globals": "node scripts/show-globals.js",
     "delete": "node scripts/delete.js",
     "test": "npm run test-simulated",
     "test:watch": "npm run test-simulated:watch",
@@ -33,5 +36,8 @@
     "jest": "^28.1.0",
     "minimist": "^1.2.6",
     "teal-interpreter": "^0.0.38"
+  },
+  "dependencies": {
+    "ascii-table": "^0.0.9"
   }
 }

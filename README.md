@@ -29,7 +29,6 @@ Install dependencies:
 npm install
 ```
 
-
 ## Deploy the smart contract
 
 The smart contract in this repo can be deployed to your Sandbox by invoking:
@@ -39,6 +38,28 @@ npm run deploy
 ```
 
 Note the app id for the deployed smart contract. You will need this later to interact with the contract and in the next section if you want to delete it.
+
+## Invoking smart contract methods
+
+Invokes the increment "method" of the teal-counter:
+
+```bash
+npm run increment -- <app-id>
+```
+
+Invokes the decrement "method" of the teal-counter:
+
+```bash
+npm run decrement -- <app-id>
+```
+
+## Show globals
+
+This is useful to test that the `counterValue` global is being incremented and decremented correctly:
+
+```bash
+npm run show-globals -- <app-id>
+```
 
 ## Delete the smart contract
 

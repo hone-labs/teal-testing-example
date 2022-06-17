@@ -40,12 +40,16 @@ describe("teal-counter / simulated", () => {
                 }
             },
             "txn": {
+                "Sender": "creator",
                 "ApplicationID": 1,
                 "OnCompletion": 0,
                 "ApplicationArgs": {
                     "0": "increment"
                 }
-            }
+            },
+            "globals": {
+                "CreatorAddress": "creator",
+            },
         };
 
         const result = await executeTeal(APPROVAL_PROGRAM, config);
@@ -70,12 +74,16 @@ describe("teal-counter / simulated", () => {
                 }
             },
             "txn": {
+                "Sender": "creator",
                 "ApplicationID": 1,
                 "OnCompletion": 0,
                 "ApplicationArgs": {
                     "0": "decrement"
                 }
-            }
+            },
+            "globals": {
+                "CreatorAddress": "creator",
+            },
         };
 
         const result = await executeTeal(APPROVAL_PROGRAM, config);

@@ -202,6 +202,42 @@ async function readGlobalState(client, addr, appId) {
     return output;
 }
 
+//
+// Creates a new account.
+//
+async function createAccount() {
+    return algosdk.generateAccount();
+}
+
+//
+// Transfer funds from one account to another.
+//
+// https://developer.algorand.org/docs/sdks/javascript/#build-first-transaction
+//
+async function transferFunds(algodClient, fromAccount, toAccountAddr, amount, fee) {
+    const params = await algodClient.getTransactionParams().do();
+    params.fee = fee;
+    params.flatFee = true;
+
+    const txn = algosdk.makePaymentTxnWithSuggestedParams(
+        fromAccount.addr,
+        toAccountAddr,
+        BigInt(amount),
+        undefined,
+        undefined,
+        params
+    );
+    return await signAndSubmitTransaction(algodClient, fromAccount, txn);
+}
+
+//
+// Create a new account and fund it with the specified amount.
+//
+async function createFundedAccount(algodClient, faucetAccount, amount, fee) {
+    const newAccount = await createAccount();
+    await transferFunds(algodClient, faucetAccount, newAccount.addr, amount, fee);
+    return newAccount;
+}
 
 module.exports = {
     deployApp,
@@ -214,4 +250,7 @@ module.exports = {
     findTransaction,
     dumpTransaction,
     readGlobalState,
+    createAccount,
+    transferFunds,
+    createFundedAccount,
 };

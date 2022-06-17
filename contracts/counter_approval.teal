@@ -6,6 +6,24 @@ int 0
 ==
 bnz on_create
 
+// The following operations can only be done by the creator of the contract.
+txn Sender
+global CreatorAddress
+==
+assert
+
+//
+// Some useful debugging code.
+//
+
+// byte "creator_addr"
+// global CreatorAddress
+// app_global_put
+
+// byte "sender_addr"
+// txn Sender
+// app_global_put
+
 txn OnCompletion
 int NoOp
 ==

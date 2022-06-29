@@ -29,7 +29,6 @@ function dumpData(result) {
     console.log(serializeData(result));
 }
 
-
 //
 // Compare two arrays for equality.
 //

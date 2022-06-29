@@ -64,39 +64,11 @@ async function deleteApp(
 }
 
 //
-// A helper function to debug log an object.
-//
-function dumpObject(label, obj) {
-    console.log(`---- ${label}:`);
-    console.log(JSON.stringify(obj, jsonEncoder, 4));
-}
-
-//
-// A custom JSON encoder for outputing a buffer.
-//
-function jsonEncoder(key, value) {
-    if (value && value.type === "Buffer") {
-        return "<Buffer>";
-    }
-
-    if (value instanceof Uint8Array) {
-        return "<Uint8Array>";
-    }
-
-    if (Buffer.isBuffer(value)) {
-        return "<Buffer>";
-    }
-
-    return value;
-}
-
-//
 // Reads a file from the file system.
 //
 async function readFile(fileName) {
     return await fs.readFile(fileName, "utf-8");
 }
-
 
 //
 // Loads and compiles a TEAL program.
@@ -249,7 +221,6 @@ async function createFundedAccount(algodClient, faucetAccount, amount, fee) {
 module.exports = {
     deployApp,
     deleteApp,
-    dumpObject,
     readFile,
     compileProgram,
     submitTransaction,

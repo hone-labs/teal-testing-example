@@ -1,35 +1,6 @@
 const algosdk = require("algosdk");
 
 //
-// Serialize complex data for display.
-//
-function serializeData(result) {
-    return JSON.stringify(
-        result,
-        (key, value) => {
-            const type = typeof value;
-            if (type === "bigint") {
-                return Number(value);
-            }
-
-            if (type === "object" && value.type === "Buffer") {
-                return "<Buffer />";
-            }
-
-            return value;
-        },
-        4
-    );
-}
-
-//
-// Dumps an object to console.log.
-//
-function dumpData(result) {
-    console.log(serializeData(result));
-}
-
-//
 // Compare two arrays for equality.
 //
 function arrayEquals(a, b) {
@@ -169,6 +140,5 @@ function expectFields(actual, expected) {
 
 module.exports = {
     serializeData,
-    dumpData,
     expectFields,
 };

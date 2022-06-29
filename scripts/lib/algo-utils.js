@@ -148,6 +148,35 @@ async function findTransaction(algodClient, roundNumber, txnId) {
 }
 
 //
+// Serialize complex data for display.
+//
+function serializeData(result) {
+    return JSON.stringify(
+        result,
+        (key, value) => {
+            const type = typeof value;
+            if (type === "bigint") {
+                return Number(value);
+            }
+
+            if (type === "object" && value.type === "Buffer") {
+                return "<Buffer />";
+            }
+
+            return value;
+        },
+        4
+    );
+}
+
+//
+// Dumps an object to console.log.
+//
+function dumpData(result) {
+    console.log(serializeData(result));
+}
+
+//
 // Print a transaction for debugging.
 //
 async function dumpTransaction(algodClient, roundNumber, txnId) {
@@ -226,6 +255,7 @@ module.exports = {
     submitTransaction,
     signAndSubmitTransaction,
     findTransaction,
+    dumpData,
     dumpTransaction,
     readGlobalState,
     dumpGlobalState,

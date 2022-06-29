@@ -203,6 +203,13 @@ async function readGlobalState(client, addr, appId) {
 }
 
 //
+// Display global state for the app.
+//
+async function dumpGlobalState(algodClient, accountAddr, appId) {
+    dumpData(await readGlobalState(algodClient, accountAddr, appId));
+}
+
+//
 // Creates a new account.
 //
 async function createAccount() {
@@ -250,6 +257,7 @@ module.exports = {
     findTransaction,
     dumpTransaction,
     readGlobalState,
+    dumpGlobalState,
     createAccount,
     transferFunds,
     createFundedAccount,

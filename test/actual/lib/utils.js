@@ -1,4 +1,4 @@
-const { expectFields, dumpData } = require("../../lib/utils");
+const { expectFields } = require("../../lib/utils");
 const { findTransaction, readGlobalState } = require("../../../scripts/lib/algo-utils");
 
 //
@@ -16,16 +16,8 @@ async function expectGlobalState(algodClient, accountAddr, appId, expectedValues
     expectFields(globalState, expectedValues);
 }
 
-//
-// Display global state for the app.
-//
-async function dumpGlobalState(algodClient, accountAddr, appId) {
-    dumpData(await readGlobalState(algodClient, accountAddr, appId));
-}
-
 module.exports = {
     findTransaction,
     expectTransaction,
     expectGlobalState,
-    dumpGlobalState,
 };

@@ -139,6 +139,5 @@ function expectFields(actual, expected) {
 }
 
 module.exports = {
-    serializeData,
     expectFields,
 };
